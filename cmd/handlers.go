@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/julianfrancor/bookswap/internal/application"
 	"github.com/gorilla/mux"
+	"github.com/julianfrancor/bookswap/internal/application"
 )
 
 func CreateBookHandler(bookService *application.BookService) http.HandlerFunc {

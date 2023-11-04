@@ -20,6 +20,8 @@ type UpdateBookRequest struct {
 	Status string `json:"status"`
 }
 
+var bookIDCounter int
+
 type BookService struct {
 	repository persistence.BookRepository
 }
@@ -31,7 +33,9 @@ func NewBookService(repository persistence.BookRepository) *BookService {
 }
 
 func (s *BookService) CreateBook(request CreateBookRequest) {
+	bookIDCounter++
 	book := domain.Book{
+		ID:     bookIDCounter,
 		Title:  request.Title,
 		Author: request.Author,
 		Genre:  request.Genre,
