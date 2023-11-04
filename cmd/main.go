@@ -4,16 +4,16 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/julianfrancor/bookswap/internal/application"
-	"github.com/julianfrancor/bookswap/internal/domain"
-	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 	"github.com/gorilla/mux"
+	"github.com/julianfrancor/bookswap/internal/application"
+	_ "github.com/julianfrancor/bookswap/internal/domain"
+	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
 func main() {
 	// Crear el repositorio y el servicio
 	bookRepository := persistence.NewBookRepository()
-	bookService := application.NewBookService(bookRepository)
+	bookService := application.NewBookService(*bookRepository)
 
 	// Crear el enrutador
 	r := mux.NewRouter()
