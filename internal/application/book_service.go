@@ -1,6 +1,9 @@
 package application
 
-import "github.com/julianfrancor/bookswap/internal/domain"
+import (
+	"github.com/julianfrancor/bookswap/internal/domain"
+	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
+)
 
 type CreateBookRequest struct {
 	Title  string `json:"title"`
@@ -18,10 +21,10 @@ type UpdateBookRequest struct {
 }
 
 type BookService struct {
-	repository domain.BookRepository
+	repository persistence.BookRepository
 }
 
-func NewBookService(repository domain.BookRepository) *BookService {
+func NewBookService(repository persistence.BookRepository) *BookService {
 	return &BookService{
 		repository: repository,
 	}

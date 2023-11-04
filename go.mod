@@ -1,4 +1,4 @@
-module bookswap
+module github.com/julianfrancor/bookswap
 
 go 1.21.3
 
