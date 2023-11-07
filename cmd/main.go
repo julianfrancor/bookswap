@@ -12,22 +12,24 @@ import (
 
 func main() {
 	// Create repositories and services
-	bookRepository := persistence.NewBookRepository()
-	bookService := application.NewBookService(*bookRepository)
-
 	userRepository := persistence.NewUserRepository()
 	userService := application.NewUserService(*userRepository)
+
+	bookRepository := persistence.NewBookRepository()
+	bookService := application.NewBookService(*bookRepository)
 
 	// Create the router
 	router := mux.NewRouter()
 
 	// Define the routes
-	router.HandleFunc("/books", CreateBookHandler(bookService)).Methods("POST")
+	router.HandleFunc("/books", CreateBookHandler(bookService, userService)).Methods("POST")
+	router.HandleFunc("/books", GetAllBooksHandler(bookService)).Methods("GET")
 	router.HandleFunc("/books/{id}", GetBookHandler(bookService)).Methods("GET")
 	router.HandleFunc("/books/{id}", UpdateBookHandler(bookService)).Methods("PUT")
 	router.HandleFunc("/books/{id}", DeleteBookHandler(bookService)).Methods("DELETE")
 
 	router.HandleFunc("/users", CreateUserHandler(userService)).Methods("POST")
+	router.HandleFunc("/users", GetAllUsersHandler(userService)).Methods("GET")
 	router.HandleFunc("/users/{id}", GetUserHandler(userService)).Methods("GET")
 	router.HandleFunc("/users/{id}", UpdateUserHandler(userService)).Methods("PUT")
 	router.HandleFunc("/users/{id}", DeleteUserHandler(userService)).Methods("DELETE")

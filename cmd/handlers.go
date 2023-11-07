@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
+	"github.com/julianfrancor/bookswap/internal/domain"
 	"net/http"
 	"strconv"
 
@@ -9,7 +11,7 @@ import (
 	"github.com/julianfrancor/bookswap/internal/application"
 )
 
-func CreateBookHandler(bookService *application.BookService) http.HandlerFunc {
+func CreateBookHandler(bookService *application.BookService, userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var book application.CreateBookRequest
 		err := json.NewDecoder(r.Body).Decode(&book)
@@ -18,8 +20,25 @@ func CreateBookHandler(bookService *application.BookService) http.HandlerFunc {
 			return
 		}
 
-		bookService.CreateBook(book)
+		err = bookService.CreateBook(book, userService)
+		if err != nil {
+			if errors.Is(err, domain.ErrUserNotFound) {
+				http.Error(w, "User not found", http.StatusNotFound)
+			} else {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
 		w.WriteHeader(http.StatusCreated)
+	}
+}
+
+func GetAllBooksHandler(bookService *application.BookService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		books := bookService.GetAllBooks()
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(books)
 	}
 }
 
@@ -110,6 +129,15 @@ func GetUserHandler(userService *application.UserService) http.HandlerFunc {
 		}
 
 		json.NewEncoder(w).Encode(user)
+	}
+}
+
+func GetAllUsersHandler(userService *application.UserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		users := userService.GetAllUsers()
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(users)
 	}
 }
 
