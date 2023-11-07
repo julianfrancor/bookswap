@@ -6,6 +6,7 @@ import (
 )
 
 type CreateBookRequest struct {
+	UserID int    `json:"userID"`
 	Title  string `json:"title"`
 	Author string `json:"author"`
 	Genre  string `json:"genre"`
@@ -35,7 +36,7 @@ func NewBookService(repository persistence.BookRepository) *BookService {
 func (s *BookService) CreateBook(request CreateBookRequest) {
 	bookIDCounter++
 	book := domain.Book{
-		ID:     bookIDCounter,
+		UserID: request.UserID,
 		Title:  request.Title,
 		Author: request.Author,
 		Genre:  request.Genre,

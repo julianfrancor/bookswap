@@ -11,20 +11,28 @@ import (
 )
 
 func main() {
-	// Crear el repositorio y el servicio
+	// Create repositories and services
 	bookRepository := persistence.NewBookRepository()
 	bookService := application.NewBookService(*bookRepository)
 
-	// Crear el enrutador
-	r := mux.NewRouter()
+	userRepository := persistence.NewUserRepository()
+	userService := application.NewUserService(*userRepository)
 
-	// Definir las rutas
-	r.HandleFunc("/books", CreateBookHandler(bookService)).Methods("POST")
-	r.HandleFunc("/books/{id}", GetBookHandler(bookService)).Methods("GET")
-	r.HandleFunc("/books/{id}", UpdateBookHandler(bookService)).Methods("PUT")
-	r.HandleFunc("/books/{id}", DeleteBookHandler(bookService)).Methods("DELETE")
+	// Create the router
+	router := mux.NewRouter()
 
-	// Iniciar el servidor
+	// Define the routes
+	router.HandleFunc("/books", CreateBookHandler(bookService)).Methods("POST")
+	router.HandleFunc("/books/{id}", GetBookHandler(bookService)).Methods("GET")
+	router.HandleFunc("/books/{id}", UpdateBookHandler(bookService)).Methods("PUT")
+	router.HandleFunc("/books/{id}", DeleteBookHandler(bookService)).Methods("DELETE")
+
+	router.HandleFunc("/users", CreateUserHandler(userService)).Methods("POST")
+	router.HandleFunc("/users/{id}", GetUserHandler(userService)).Methods("GET")
+	router.HandleFunc("/users/{id}", UpdateUserHandler(userService)).Methods("PUT")
+	router.HandleFunc("/users/{id}", DeleteUserHandler(userService)).Methods("DELETE")
+
+	// Init the server
 	log.Println("Starting server on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

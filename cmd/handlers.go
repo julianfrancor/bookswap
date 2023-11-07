@@ -79,3 +79,74 @@ func DeleteBookHandler(bookService *application.BookService) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 	}
 }
+
+func CreateUserHandler(userService *application.UserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var userRequest application.CreateUserRequest
+		err := json.NewDecoder(r.Body).Decode(&userRequest)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		userService.CreateUser(userRequest)
+		w.WriteHeader(http.StatusCreated)
+	}
+}
+
+func GetUserHandler(userService *application.UserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		user, err := userService.GetUserByID(id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		json.NewEncoder(w).Encode(user)
+	}
+}
+
+func UpdateUserHandler(userService *application.UserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		var userRequest application.UpdateUserRequest
+		err = json.NewDecoder(r.Body).Decode(&userRequest)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		userRequest.ID = id
+		userService.UpdateUser(userRequest)
+
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func DeleteUserHandler(userService *application.UserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		userService.DeleteUser(id)
+
+		w.WriteHeader(http.StatusOK)
+	}
+}
