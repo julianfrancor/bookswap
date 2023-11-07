@@ -4,27 +4,37 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/julianfrancor/bookswap/internal/application"
-	"github.com/julianfrancor/bookswap/internal/domain"
-	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 	"github.com/gorilla/mux"
+	"github.com/julianfrancor/bookswap/internal/application"
+	_ "github.com/julianfrancor/bookswap/internal/domain"
+	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
 func main() {
-	// Crear el repositorio y el servicio
+	// Create repositories and services
+	userRepository := persistence.NewUserRepository()
+	userService := application.NewUserService(*userRepository)
+
 	bookRepository := persistence.NewBookRepository()
-	bookService := application.NewBookService(bookRepository)
+	bookService := application.NewBookService(*bookRepository)
 
-	// Crear el enrutador
-	r := mux.NewRouter()
+	// Create the router
+	router := mux.NewRouter()
 
-	// Definir las rutas
-	r.HandleFunc("/books", CreateBookHandler(bookService)).Methods("POST")
-	r.HandleFunc("/books/{id}", GetBookHandler(bookService)).Methods("GET")
-	r.HandleFunc("/books/{id}", UpdateBookHandler(bookService)).Methods("PUT")
-	r.HandleFunc("/books/{id}", DeleteBookHandler(bookService)).Methods("DELETE")
+	// Define the routes
+	router.HandleFunc("/books", CreateBookHandler(bookService, userService)).Methods("POST")
+	router.HandleFunc("/books", GetAllBooksHandler(bookService)).Methods("GET")
+	router.HandleFunc("/books/{id}", GetBookHandler(bookService)).Methods("GET")
+	router.HandleFunc("/books/{id}", UpdateBookHandler(bookService)).Methods("PUT")
+	router.HandleFunc("/books/{id}", DeleteBookHandler(bookService)).Methods("DELETE")
 
-	// Iniciar el servidor
+	router.HandleFunc("/users", CreateUserHandler(userService)).Methods("POST")
+	router.HandleFunc("/users", GetAllUsersHandler(userService)).Methods("GET")
+	router.HandleFunc("/users/{id}", GetUserHandler(userService)).Methods("GET")
+	router.HandleFunc("/users/{id}", UpdateUserHandler(userService)).Methods("PUT")
+	router.HandleFunc("/users/{id}", DeleteUserHandler(userService)).Methods("DELETE")
+
+	// Init the server
 	log.Println("Starting server on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

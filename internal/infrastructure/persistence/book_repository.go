@@ -34,6 +34,10 @@ func (r *BookRepository) GetByID(id int) (domain.Book, error) {
 	return domain.Book{}, domain.ErrBookNotFound
 }
 
+func (r *BookRepository) GetAll() []domain.Book {
+	return r.books
+}
+
 func (r *BookRepository) Delete(id int) {
 	for i, b := range r.books {
 		if b.ID == id {
