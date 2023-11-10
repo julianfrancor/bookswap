@@ -22,9 +22,23 @@ jobs:
           go-version: 1.21.3
 
       # Build and run unit tests
-      - name: Build and Test
+      - name: Build and Test Application
         run: |
-          cd internal/..
+          cd internal/application
+          go build
+          go test ./... -coverprofile=coverage.out
+          
+            # Build and run unit tests
+
+      - name: Build and Test Domain
+        run: |
+          cd internal/domain
+          go build
+          go test ./... -coverprofile=coverage.out
+
+      - name: Build and Test Persistence
+        run: |
+          cd internal/infrastructure/persistence
           go build
           go test ./... -coverprofile=coverage.out
 
