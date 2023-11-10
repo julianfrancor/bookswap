@@ -24,7 +24,7 @@ jobs:
       # Build and run unit tests
       - name: Build and Test
         run: |
-          cd internal
+          cd internal/..
           go build
           go test ./... -coverprofile=coverage.out
 
