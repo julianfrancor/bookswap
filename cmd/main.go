@@ -10,6 +10,11 @@ import (
 	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
+//	@title			BookSwap API
+//	@description	This is the API documentation for the BookSwap application.
+//	@version		1.0
+//	@host			localhost:8080
+//	@BasePath		/
 func main() {
 	// Create repositories and services
 	userRepository := persistence.NewUserRepository()

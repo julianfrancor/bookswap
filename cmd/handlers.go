@@ -11,6 +11,16 @@ import (
 	"github.com/julianfrancor/bookswap/internal/application"
 )
 
+// CreateBookHandler CreateBookRequest
+// @Summary		Create a new book
+// @Description	Create a new book and associate it with a user
+// @Tags			books
+// @Accept			json
+// @Produce		json
+// @Param			request			body		application.CreateBookRequest	true	"Create Book Request"
+// @Param			Authorization	header		string							true	"Bearer {token}"
+// @Success		201				{object}	domain.Book
+// @Router			/books [post]
 func CreateBookHandler(bookService *application.BookService, userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var book application.CreateBookRequest
@@ -33,6 +43,13 @@ func CreateBookHandler(bookService *application.BookService, userService *applic
 	}
 }
 
+// GetAllBooksHandler @Summary Get all books
+//
+//	@Description	Get a list of all books
+//	@Tags			books
+//	@Produce		json
+//	@Success		200	{array}	Book
+//	@Router			/books [get]
 func GetAllBooksHandler(bookService *application.BookService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		books := bookService.GetAllBooks()
@@ -99,6 +116,16 @@ func DeleteBookHandler(bookService *application.BookService) http.HandlerFunc {
 	}
 }
 
+// CreateUserHandler @Summary Create a new user
+//
+//	@Description	Create a new user
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		CreateUserRequest	true	"CreateUserRequest"
+//	@Success		201		{object}	User
+//	@Failure		400		{object}	ErrorResponse
+//	@Router			/users [post]
 func CreateUserHandler(userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var userRequest application.CreateUserRequest
@@ -113,6 +140,16 @@ func CreateUserHandler(userService *application.UserService) http.HandlerFunc {
 	}
 }
 
+// GetUserHandler @Summary Get a user by ID
+//
+//	@Description	Get a user by their ID
+//	@Tags			users
+//	@Produce		json
+//	@Param			id	path		int	true	"User ID"
+//	@Success		200	{object}	User
+//	@Failure		400	{object}	ErrorResponse
+//	@Failure		404	{object}	ErrorResponse
+//	@Router			/users/{id} [get]
 func GetUserHandler(userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -132,6 +169,13 @@ func GetUserHandler(userService *application.UserService) http.HandlerFunc {
 	}
 }
 
+// GetAllUsersHandler @Summary Get all users
+//
+//	@Description	Get a list of all users
+//	@Tags			users
+//	@Produce		json
+//	@Success		200	{array}	User
+//	@Router			/users [get]
 func GetAllUsersHandler(userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		users := userService.GetAllUsers()
@@ -141,6 +185,18 @@ func GetAllUsersHandler(userService *application.UserService) http.HandlerFunc {
 	}
 }
 
+// UpdateUserHandler @Summary Update a user
+//
+//	@Description	Update a user's information
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"User ID"
+//	@Param			request	body		UpdateUserRequest	true	"UpdateUserRequest"
+//	@Success		200		{object}	User
+//	@Failure		400		{object}	ErrorResponse
+//	@Failure		404		{object}	ErrorResponse
+//	@Router			/users/{id} [put]
 func UpdateUserHandler(userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -164,6 +220,15 @@ func UpdateUserHandler(userService *application.UserService) http.HandlerFunc {
 	}
 }
 
+// DeleteUserHandler @Summary Delete a user
+//
+//	@Description	Delete a user by their ID
+//	@Tags			users
+//	@Param			id	path	int	true	"User ID"
+//	@Success		204	"No Content"
+//	@Failure		400	{object}	ErrorResponse
+//	@Failure		404	{object}	ErrorResponse
+//	@Router			/users/{id} [delete]
 func DeleteUserHandler(userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
