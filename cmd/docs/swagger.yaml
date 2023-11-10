@@ -107,10 +107,10 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8080
+host: localhost:8081
 info:
   contact: {}
-  description: This is the API documentation for the BookSwap application.
+  description: Endpoints for managing users in the BookSwap App.
   title: BookSwap API
   version: "1.0"
 paths:

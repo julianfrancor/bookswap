@@ -12,11 +12,20 @@ import (
 	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
-// @title			BookSwap API
-// @description	This is the API documentation for the BookSwap application.
-// @version		1.0
-// @host			localhost:8081
-// @BasePath		/
+// @title         BookSwap API
+// @description   BookSwap is a RESTful API for managing books and users within the BookSwap application.
+//
+//	This API provides endpoints to perform CRUD operations on books and users, allowing users
+//	to interact with the BookSwap system.
+//
+// @version       1.0
+// @host          localhost:8081
+// @BasePath      /
+// @contact       name:"BookSwap Support" email:"support@bookswap.com"
+// @tag Books
+// @description Endpoints for managing books in the BookSwap App.
+// @tag Users
+// @description Endpoints for managing users in the BookSwap App.
 func main() {
 	// Create repositories and services
 	userRepository := persistence.NewUserRepository()

@@ -1,12 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is the API documentation for the BookSwap application.",
+        "description": "Endpoints for managing users in the BookSwap App.",
         "title": "BookSwap API",
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "localhost:8081",
     "basePath": "/",
     "paths": {
         "/books": {
