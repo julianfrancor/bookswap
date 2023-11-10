@@ -42,13 +42,6 @@ jobs:
           go build
           go test ./... -coverprofile=coverage.out
 
-      # Upload coverage report
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./.../coverage.out
-
       # Upload coverage reports
       - name: Upload coverage reports
         uses: codecov/codecov-action@v2
@@ -58,5 +51,3 @@ jobs:
             internal/application/coverage.out
             internal/domain/coverage.out
             internal/infrastructure/persistence/coverage.out
-
-
