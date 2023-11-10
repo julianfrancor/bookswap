@@ -1,20 +1,22 @@
 package main
 
 import (
+	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	_ "github.com/julianfrancor/bookswap/cmd/docs"
 	"github.com/julianfrancor/bookswap/internal/application"
 	_ "github.com/julianfrancor/bookswap/internal/domain"
 	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
-//	@title			BookSwap API
-//	@description	This is the API documentation for the BookSwap application.
-//	@version		1.0
-//	@host			localhost:8080
-//	@BasePath		/
+// @title			BookSwap API
+// @description	This is the API documentation for the BookSwap application.
+// @version		1.0
+// @host			localhost:8081
+// @BasePath		/
 func main() {
 	// Create repositories and services
 	userRepository := persistence.NewUserRepository()
@@ -39,7 +41,16 @@ func main() {
 	router.HandleFunc("/users/{id}", UpdateUserHandler(userService)).Methods("PUT")
 	router.HandleFunc("/users/{id}", DeleteUserHandler(userService)).Methods("DELETE")
 
+	// docs route
+	//router.PathPrefix("/documentation/").Handler(httpSwagger.WrapHandler)
+	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8081/swagger/doc.json"),
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	)).Methods(http.MethodGet)
+
 	// Init the server
-	log.Println("Starting server on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Println("Starting server on :8081...")
+	log.Fatal(http.ListenAndServe(":8081", router))
 }

@@ -11,11 +11,24 @@ type CreateUserRequest struct {
 	Email    string `json:"email"`
 }
 
+// UpdateUserRequest represents the request body for updating user information.
 type UpdateUserRequest struct {
-	ID       int           `json:"id"`
-	Username string        `json:"username"`
-	Email    string        `json:"email"`
-	Books    []domain.Book `json:"books,omitempty"`
+	// ID is the unique identifier for the user.
+	// Example: 1
+	// Note: This field should not be modified in an update request.
+	ID int `json:"id"`
+
+	// Username is the username of the user.
+	// Example: john_doe
+	Username string `json:"username"`
+
+	// Email is the email address of the user.
+	// Example: john.doe@example.com
+	Email string `json:"email"`
+
+	// Books is a list of books associated with the user.
+	// Example: [{"id": 1, "user_id": 1, "title": "Sample Book", "author": "John Doe", "genre": "Fiction", "status": "Available"}]
+	Books []domain.Book `json:"books,omitempty"`
 }
 
 type UserService struct {

@@ -140,11 +140,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/application.CreateBookRequest'
-      - description: Bearer {token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:

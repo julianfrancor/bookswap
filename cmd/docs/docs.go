@@ -58,13 +58,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/application.CreateBookRequest"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer {token}",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {

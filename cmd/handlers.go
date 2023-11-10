@@ -18,7 +18,6 @@ import (
 // @Accept			json
 // @Produce			json
 // @Param			request			body		application.CreateBookRequest	true	"Create Book Request"
-// @Param			Authorization	header		string							true	"Bearer {token}"
 // @Success			201				{object}	domain.Book
 // @Router			/books [post]
 func CreateBookHandler(bookService *application.BookService, userService *application.UserService) http.HandlerFunc {
