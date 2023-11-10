@@ -333,7 +333,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "BookSwap API",
-	Description:      "Endpoints for managing users in the BookSwap App.",
+	Description:      "BookSwap is a RESTful API for managing books and users within the BookSwap application.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -22,10 +22,6 @@ import (
 // @host          localhost:8081
 // @BasePath      /
 // @contact       name:"BookSwap Support" email:"support@bookswap.com"
-// @tag Books
-// @description Endpoints for managing books in the BookSwap App.
-// @tag Users
-// @description Endpoints for managing users in the BookSwap App.
 func main() {
 	// Create repositories and services
 	userRepository := persistence.NewUserRepository()

@@ -110,7 +110,8 @@ definitions:
 host: localhost:8081
 info:
   contact: {}
-  description: Endpoints for managing users in the BookSwap App.
+  description: BookSwap is a RESTful API for managing books and users within the BookSwap
+    application.
   title: BookSwap API
   version: "1.0"
 paths:
