@@ -47,7 +47,7 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: internal/application/coverage.out
+          files: ./.../coverage.out
 
       # Upload coverage reports
       - name: Upload coverage reports
