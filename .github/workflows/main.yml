@@ -24,6 +24,7 @@ jobs:
       # Build and run unit tests
       - name: Build and Test
         run: |
+          cd bookswap/
           go build
           go test ./... -coverprofile=coverage.out
 
