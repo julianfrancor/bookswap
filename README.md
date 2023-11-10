@@ -53,6 +53,11 @@ To run tests for different components:
 - For domain entities and logic: `go test ./internal/domain/...`
 - For infrastructure/persistence: `go test ./internal/infrastructure/persistence/...`
 
+### Contact
+Connect with Julian Franco on LinkedIn for any inquiries, feedback related to the BookSwap project, or potential job offers: [Julian Franco - LinkedIn](https://www.linkedin.com/in/julianfrancor/)
+
 Feel free to explore the codebase, experiment with DDD concepts, and use this project as a reference for your own DDD-based applications.
 
 Note: This README provides an overview of the project and its main aspects. As the project evolves, more details and additional documentation will be added as needed.
+
+
