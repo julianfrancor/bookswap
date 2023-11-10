@@ -58,6 +58,8 @@ Connect with Julian Franco on LinkedIn for any inquiries, feedback related to th
 
 Feel free to explore the codebase, experiment with DDD concepts, and use this project as a reference for your own DDD-based applications.
 
+---
+
 Note: This README provides an overview of the project and its main aspects. As the project evolves, more details and additional documentation will be added as needed.
 
 
