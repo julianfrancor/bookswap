@@ -2,7 +2,7 @@ package domain
 
 import "errors"
 
-var ErrUserNotFound = errors.New("book not found")
+var ErrUserNotFound = errors.New("user not found")
 
 type User struct {
 	ID       int
