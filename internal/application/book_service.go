@@ -30,6 +30,7 @@ type CreateBookRequest struct {
 
 type UpdateBookRequest struct {
 	ID     int    `json:"id"`
+	UserID int    `json:"userID"`
 	Title  string `json:"title"`
 	Author string `json:"author"`
 	Genre  string `json:"genre"`
@@ -81,6 +82,7 @@ func (s *BookService) CreateBook(request CreateBookRequest, userService *UserSer
 func (s *BookService) UpdateBook(request UpdateBookRequest) {
 	book := domain.Book{
 		ID:     request.ID,
+		UserID: request.UserID,
 		Title:  request.Title,
 		Author: request.Author,
 		Genre:  request.Genre,
