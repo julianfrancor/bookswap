@@ -47,5 +47,16 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.out
+          files: internal/application/coverage.out
+
+      # Upload coverage reports
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: |
+            internal/application/coverage.out
+            internal/domain/coverage.out
+            internal/infrastructure/persistence/coverage.out
+
 
