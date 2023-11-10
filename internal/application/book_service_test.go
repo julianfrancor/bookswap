@@ -1,59 +1,89 @@
 package application
 
 import (
-	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
+	"errors"
 	"testing"
 
 	"github.com/julianfrancor/bookswap/internal/domain"
+	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
 func TestBookService(t *testing.T) {
-	repository := persistence.NewBookRepository()
-	service := NewBookService(*repository)
+	// Create the repositories and services
+	bookRepository := persistence.NewBookRepository()
+	userRepository := persistence.NewUserRepository()
+	bookService := NewBookService(*bookRepository)
+	userService := NewUserService(*userRepository)
 
-	// Test Crear un libro
-	book := domain.Book{ID: 1, Title: "Libro 1", Author: "Autor 1", Genre: "Género 1", Status: "Disponible"}
-	service.CreateBook(CreateBookRequest{
-		book.Title,
-		book.Author,
-		book.Genre,
-		book.Status,
-	})
+	// Create a User
+	userRequest := CreateUserRequest{
+		Username: "julian",
+		Email:    "julian@bookswap.com",
+	}
+	userService.CreateUser(userRequest)
+	userID := userService.GetAllUsers()[0].ID
 
-	// Verificar si el libro se ha creado correctamente
-	createdBook, err := service.GetBookByID(1)
+	// Test Create a book request
+	bookRequest := CreateBookRequest{
+		UserID: userID,
+		Title:  "Book 1",
+		Author: "Author 1",
+		Genre:  "Genre 1",
+		Status: "Available",
+	}
+	bookService.CreateBook(bookRequest, userService)
+
+	// Verify if the book has been created successfully
+	createdBook, err := bookService.GetBookByID(1)
 	if err != nil {
-		t.Errorf("Error al obtener el libro: %v", err)
+		t.Errorf("Error fetching the book: %v", err)
 	}
-	if createdBook != book {
-		t.Errorf("El libro creado no coincide con el esperado")
+	if createdBook != (domain.Book{
+		ID:     1,
+		UserID: userID,
+		Title:  "Book 1",
+		Author: "Author 1",
+		Genre:  "Genre 1",
+		Status: "Available",
+	}) {
+		t.Errorf("Created book does not match the expected one")
 	}
 
-	// Test Actualizar un libro
-	updatedBook := domain.Book{ID: 1, Title: "Libro 1 Modificado", Author: "Autor 1", Genre: "Género 1", Status: "Intercambiado"}
-	service.UpdateBook(UpdateBookRequest{
-		updatedBook.ID,
-		updatedBook.Title,
-		updatedBook.Author,
-		updatedBook.Genre,
-		updatedBook.Status,
-	})
+	// Test Update a book
+	updatedBookRequest := UpdateBookRequest{
+		ID:     1,
+		UserID: userID,
+		Title:  "Modified_Book1",
+		Author: "Author1",
+		Genre:  "Genre1",
+		Status: "Exchanged",
+	}
+	bookService.UpdateBook(updatedBookRequest)
 
-	// Verificar si el libro se ha actualizado correctamente
-	updatedBook, err = service.GetBookByID(1)
+	// Verify if the book has been updated successfully
+	updatedBookResult, err := bookService.GetBookByID(1)
+
 	if err != nil {
-		t.Errorf("Error al obtener el libro actualizado: %v", err)
-	}
-	if updatedBook != updatedBook {
-		t.Errorf("El libro actualizado no coincide con el esperado")
+		t.Errorf("Error fetching the updated book: %v", err)
 	}
 
-	// Test Eliminar un libro
-	service.DeleteBook(1)
+	if updatedBookResult != (domain.Book{
+		ID:     1,
+		UserID: userID,
+		Title:  "Modified_Book1",
+		Author: "Author1",
+		Genre:  "Genre1",
+		Status: "Exchanged",
+	}) {
+		t.Errorf("Updated book does not match the expected one")
+	}
 
-	// Verificar si el libro se ha eliminado correctamente
-	_, err = service.GetBookByID(1)
-	if err != domain.ErrBookNotFound {
-		t.Errorf("Se esperaba un error al intentar obtener un libro eliminado")
+	// Test Delete a book
+	bookService.DeleteBook(1)
+
+	// Verify if the book has been deleted successfully
+	_, err = bookService.GetBookByID(1)
+	if !errors.Is(err, domain.ErrBookNotFound) {
+		t.Errorf("Expected an error when trying to fetch a deleted book")
 	}
 }
