@@ -1,0 +1,247 @@
+basePath: /
+definitions:
+  application.CreateBookRequest:
+    properties:
+      author:
+        description: |-
+          Author of the book.
+          Example: "J.D. Salinger"
+        type: string
+      genre:
+        description: |-
+          Genre of the book.
+          Example: "Fiction"
+        type: string
+      status:
+        description: |-
+          Status of the book.
+          Example: "Available"
+        type: string
+      title:
+        description: |-
+          Title of the book.
+          Example: "The Catcher in the Rye"
+        type: string
+      userID:
+        description: |-
+          UserID is the ID of the user associated with the book.
+          Example: 1
+        type: integer
+    type: object
+  application.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+    type: object
+  application.UpdateUserRequest:
+    properties:
+      books:
+        description: |-
+          Books is a list of books associated with the user.
+          Example: [{"id": 1, "user_id": 1, "title": "Sample Book", "author": "John Doe", "genre": "Fiction", "status": "Available"}]
+        items:
+          $ref: '#/definitions/domain.Book'
+        type: array
+      email:
+        description: |-
+          Email is the email address of the user.
+          Example: john.doe@example.com
+        type: string
+      id:
+        description: |-
+          ID is the unique identifier for the user.
+          Example: 1
+          Note: This field should not be modified in an update request.
+        type: integer
+      username:
+        description: |-
+          Username is the username of the user.
+          Example: john_doe
+        type: string
+    type: object
+  domain.Book:
+    properties:
+      author:
+        description: |-
+          Author is the author of the book.
+          Example: "J.D. Salinger"
+        type: string
+      genre:
+        description: |-
+          Genre is the genre of the book.
+          Example: "Fiction"
+        type: string
+      id:
+        description: |-
+          ID is the unique identifier for the book.
+          Example: 1
+        type: integer
+      status:
+        description: |-
+          Status represents the availability status of the book.
+          Example: "Available"
+        type: string
+      title:
+        description: |-
+          Title is the title of the book.
+          Example: "The Catcher in the Rye"
+        type: string
+      user_id:
+        description: |-
+          UserID is the ID of the user associated with the book.
+          Example: 1
+        type: integer
+    type: object
+  domain.User:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/domain.Book'
+        type: array
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: BookSwap is a RESTful API for managing books and users within the BookSwap
+    application.
+  title: BookSwap API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      description: Get a list of all books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Book'
+            type: array
+      summary: Get all books
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Create a new book and associate it with a user
+      parameters:
+      - description: Create Book Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/application.CreateBookRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Book'
+      summary: Create a new book
+      tags:
+      - books
+  /users:
+    get:
+      description: Get a list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.User'
+            type: array
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: CreateUserRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/application.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.User'
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      description: Get a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update a user's information
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UpdateUserRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/application.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+      tags:
+      - users
+swagger: "2.0"

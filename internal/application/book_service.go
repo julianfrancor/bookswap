@@ -5,11 +5,26 @@ import (
 	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
+// CreateBookRequest represents the request body for creating a new book.
 type CreateBookRequest struct {
-	UserID int    `json:"userID"`
-	Title  string `json:"title"`
+	// UserID is the ID of the user associated with the book.
+	// Example: 1
+	UserID int `json:"userID"`
+
+	// Title of the book.
+	// Example: "The Catcher in the Rye"
+	Title string `json:"title"`
+
+	// Author of the book.
+	// Example: "J.D. Salinger"
 	Author string `json:"author"`
-	Genre  string `json:"genre"`
+
+	// Genre of the book.
+	// Example: "Fiction"
+	Genre string `json:"genre"`
+
+	// Status of the book.
+	// Example: "Available"
 	Status string `json:"status"`
 }
 

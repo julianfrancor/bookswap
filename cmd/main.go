@@ -1,15 +1,27 @@
 package main
 
 import (
+	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	_ "github.com/julianfrancor/bookswap/cmd/docs"
 	"github.com/julianfrancor/bookswap/internal/application"
 	_ "github.com/julianfrancor/bookswap/internal/domain"
 	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 )
 
+// @title         BookSwap API
+// @description   BookSwap is a RESTful API for managing books and users within the BookSwap application.
+//
+//	This API provides endpoints to perform CRUD operations on books and users, allowing users
+//	to interact with the BookSwap system.
+//
+// @version       1.0
+// @host          localhost:8081
+// @BasePath      /
+// @contact       name:"BookSwap Support" email:"support@bookswap.com"
 func main() {
 	// Create repositories and services
 	userRepository := persistence.NewUserRepository()
@@ -34,7 +46,16 @@ func main() {
 	router.HandleFunc("/users/{id}", UpdateUserHandler(userService)).Methods("PUT")
 	router.HandleFunc("/users/{id}", DeleteUserHandler(userService)).Methods("DELETE")
 
+	// docs route
+	//router.PathPrefix("/documentation/").Handler(httpSwagger.WrapHandler)
+	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8081/swagger/doc.json"),
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	)).Methods(http.MethodGet)
+
 	// Init the server
-	log.Println("Starting server on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Println("Starting server on :8081...")
+	log.Fatal(http.ListenAndServe(":8081", router))
 }
