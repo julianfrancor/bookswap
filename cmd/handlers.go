@@ -14,13 +14,13 @@ import (
 // CreateBookHandler CreateBookRequest
 // @Summary		Create a new book
 // @Description	Create a new book and associate it with a user
-// @Tags			books
-// @Accept			json
+// @Tags		books
+// @Accept		json
 // @Produce		json
-// @Param			request			body		application.CreateBookRequest	true	"Create Book Request"
-// @Param			Authorization	header		string							true	"Bearer {token}"
+// @Param		request			body		application.CreateBookRequest	true	"Create Book Request"
+// @Param		Authorization	header		string							true	"Bearer {token}"
 // @Success		201				{object}	domain.Book
-// @Router			/books [post]
+// @Router		/books [post]
 func CreateBookHandler(bookService *application.BookService, userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var book application.CreateBookRequest
