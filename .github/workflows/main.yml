@@ -51,3 +51,6 @@ jobs:
             internal/application/coverage.out
             internal/domain/coverage.out
             internal/infrastructure/persistence/coverage.out
+
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.2.1
