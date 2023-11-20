@@ -29,13 +29,13 @@ func NewExchangeService(repository persistence.ExchangeRepository) *ExchangeServ
 }
 
 // ExchangeBooks performs the exchange of a book from one user to another.
-func (s *ExchangeService) ExchangeBooks(exchangeRequest CreateExchangeRequest, bookService *BookService) error {
+func (s *ExchangeService) ExchangeBooks(exchangeRequest CreateExchangeRequest, bookService *BookService, userService *UserService) error {
 	user1ID := exchangeRequest.User1ID
 	user2ID := exchangeRequest.User2ID
 	book1ID := exchangeRequest.Book1ID
 	book2ID := exchangeRequest.Book2ID
 
-	// Check if the book1 existsz
+	// Check if the book1 exists
 	book1, err := bookService.GetBookByID(book1ID)
 	if err != nil {
 		fmt.Println("Book1 is not in DB")
@@ -72,6 +72,10 @@ func (s *ExchangeService) ExchangeBooks(exchangeRequest CreateExchangeRequest, b
 	book2.UserID = user1ID
 	updateBook2Request := bookService.ConvertToUpdateBookRequest(book2)
 	bookService.UpdateBook(updateBook2Request)
+
+	// Update users shelves
+	userService.UpdateUserBooksOnExchange(user1ID, book1ID, book2ID, *bookService)
+	userService.UpdateUserBooksOnExchange(user2ID, book2ID, book1ID, *bookService)
 
 	// Save the exchange
 	s.repository.Create(exchange)

@@ -99,6 +99,19 @@ func (s *BookService) GetAllBooks() []domain.Book {
 	return s.repository.GetAll()
 }
 
+// GetAllBooksByUserID retrieves all books that belong to a specific user.
+func (s *BookService) GetAllBooksByUserID(userID int) []domain.Book {
+	var userBooks []domain.Book
+
+	allBooks := s.repository.GetAll()
+	for _, book := range allBooks {
+		if book.UserID == userID {
+			userBooks = append(userBooks, book)
+		}
+	}
+	return userBooks
+}
+
 func (s *BookService) DeleteBook(id int) {
 	s.repository.Delete(id)
 }

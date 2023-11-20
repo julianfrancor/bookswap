@@ -83,3 +83,36 @@ func (s *UserService) GetAllUsers() []domain.User {
 func (s *UserService) DeleteUser(id int) {
 	s.repository.Delete(id)
 }
+
+// UpdateUserBooksOnExchange updates the user's book list after exchanging books.
+func (s *UserService) UpdateUserBooksOnExchange(userID, oldBookID, newBookID int, bookService BookService) {
+	// We get the user with the matching ID
+	user, err := s.GetUserByID(userID)
+	if err != nil {
+		// Handle when user is not found
+		return
+	}
+	// Remove the old book from the user's book list
+	var updatedBooks []domain.Book
+	for _, book := range user.Books {
+		if book.ID != oldBookID {
+			updatedBooks = append(updatedBooks, book)
+		}
+	}
+
+	// Add the new book to the user's book list
+	newBook, err := bookService.GetBookByID(newBookID)
+	if err == nil {
+		updatedBooks = append(updatedBooks, newBook)
+	}
+
+	// Update the user's book list
+	updateUserRequest := UpdateUserRequest{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+		Books:    updatedBooks,
+	}
+
+	s.UpdateUser(updateUserRequest)
+}

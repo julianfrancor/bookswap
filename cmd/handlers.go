@@ -238,7 +238,7 @@ func DeleteUserHandler(userService *application.UserService) http.HandlerFunc {
 }
 
 // ExchangeBooksHandler handles the HTTP request for exchanging books between users.
-func ExchangeBooksHandler(exchangeService *application.ExchangeService, bookService *application.BookService) http.HandlerFunc {
+func ExchangeBooksHandler(exchangeService *application.ExchangeService, bookService *application.BookService, userService *application.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var exchangeRequest application.CreateExchangeRequest
 		err := json.NewDecoder(r.Body).Decode(&exchangeRequest)
@@ -247,7 +247,7 @@ func ExchangeBooksHandler(exchangeService *application.ExchangeService, bookServ
 			return
 		}
 
-		err = exchangeService.ExchangeBooks(exchangeRequest, bookService)
+		err = exchangeService.ExchangeBooks(exchangeRequest, bookService, userService)
 		if err != nil {
 			// Handle specific errors as needed
 			http.Error(w, err.Error(), http.StatusInternalServerError)
