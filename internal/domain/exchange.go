@@ -1,8 +1,11 @@
 package domain
 
 import (
+	"errors"
 	"time"
 )
+
+var ErrExchangeNotFound = errors.New("exchange not found")
 
 // Exchange represents an exchange or trade between users.
 type Exchange struct {
