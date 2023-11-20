@@ -52,10 +52,8 @@ func main() {
 	// Exchange handlers
 	router.HandleFunc("/exchanges", ExchangeBooksHandler(exchangeService, bookService, userService)).Methods("POST")
 	router.HandleFunc("/exchanges/{id:[0-9]+}", GetExchangeHandler(exchangeService)).Methods("GET")
-	// Add more exchange handlers as needed
 
 	// docs route
-	//router.PathPrefix("/documentation/").Handler(httpSwagger.WrapHandler)
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8081/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
