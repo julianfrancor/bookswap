@@ -3,6 +3,7 @@ package domain
 import "errors"
 
 var ErrBookNotFound = errors.New("book not found")
+var ErrBookNotOwnedByUser = errors.New("book not found by user")
 
 // Book represents a book entity.
 type Book struct {

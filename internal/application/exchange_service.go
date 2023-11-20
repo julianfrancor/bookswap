@@ -1,23 +1,13 @@
-// Package application provides the application services for the BookSwap application.
+// internal/application/exchange_service.go
+
 package application
 
 import (
+	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 	"time"
 
 	"github.com/julianfrancor/bookswap/internal/domain"
 )
-
-// ExchangeService provides the business logic for managing exchanges.
-type ExchangeService struct {
-	repository domain.ExchangeRepository
-}
-
-// NewExchangeService creates a new ExchangeService instance.
-func NewExchangeService(repository domain.ExchangeRepository) *ExchangeService {
-	return &ExchangeService{
-		repository: repository,
-	}
-}
 
 // CreateExchangeRequest represents the request structure for creating an exchange.
 type CreateExchangeRequest struct {
@@ -27,49 +17,63 @@ type CreateExchangeRequest struct {
 	Book2ID int `json:"book2_id"`
 }
 
-// UpdateExchangeRequest represents the request structure for updating an exchange.
-type UpdateExchangeRequest struct {
-	ID        int    `json:"id"`
-	Status    string `json:"status"`
-	Completed bool   `json:"completed"`
+// ExchangeService provides the business logic for managing exchanges.
+type ExchangeService struct {
+	repository     persistence.ExchangeRepository
+	bookRepository persistence.BookRepository
 }
 
-// CreateExchange creates a new exchange.
-func (s *ExchangeService) CreateExchange(request CreateExchangeRequest) {
+// NewExchangeService creates a new ExchangeService instance.
+func NewExchangeService(repository persistence.ExchangeRepository, bookRepository persistence.BookRepository) *ExchangeService {
+	return &ExchangeService{
+		repository:     repository,
+		bookRepository: bookRepository,
+	}
+}
+
+// ExchangeBooks performs the exchange of a book from one user to another.
+func (s *ExchangeService) ExchangeBooks(user1ID, user2ID, book1ID int, book2ID int) error {
+	// Check if the book1 exists
+	book1, err := s.bookRepository.GetByID(book1ID)
+	if err != nil {
+		return err
+	}
+
+	// Check if the book1 exists
+	book2, err := s.bookRepository.GetByID(book2ID)
+	if err != nil {
+		return err
+	}
+
+	// Check if the books belongs to its users
+	if book1.UserID != user1ID || book2.UserID != user2ID {
+		return domain.ErrBookNotOwnedByUser
+	}
+
+	// Create the exchange
 	exchange := domain.Exchange{
-		User1ID:   request.User1ID,
-		User2ID:   request.User2ID,
-		Book1ID:   request.Book1ID,
-		Book2ID:   request.Book2ID,
-		Status:    domain.ExchangeStatusPending,
+		User1ID:   user1ID,
+		User2ID:   user2ID,
+		Book1ID:   book1ID,
+		Book2ID:   book2ID,
 		CreatedAt: time.Now(),
 	}
 
+	// Transfer the book1 to user2
+	book1.UserID = user2ID
+	s.bookRepository.Update(book1)
+
+	// Transfer the book2 to user1
+	book2.UserID = user1ID
+	s.bookRepository.Update(book2)
+
+	// Save the exchange
 	s.repository.Create(exchange)
+
+	return nil
 }
 
-// UpdateExchange updates an existing exchange.
-func (s *ExchangeService) UpdateExchange(request UpdateExchangeRequest) {
-	existingExchange, err := s.repository.GetByID(request.ID)
-	if err != nil {
-		// Handle error, exchange not found
-		return
-	}
-
-	existingExchange.Status = domain.ExchangeStatus(request.Status)
-	if request.Completed {
-		existingExchange.CompletedAt = time.Now()
-	}
-
-	s.repository.Update(existingExchange)
-}
-
-// GetExchangeByID retrieves details of an exchange by ID.
+// GetExchangeByID retrieves an exchange by its ID.
 func (s *ExchangeService) GetExchangeByID(id int) (domain.Exchange, error) {
 	return s.repository.GetByID(id)
-}
-
-// DeleteExchange deletes an exchange by ID.
-func (s *ExchangeService) DeleteExchange(id int) {
-	s.repository.Delete(id)
 }

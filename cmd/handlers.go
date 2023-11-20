@@ -236,3 +236,44 @@ func DeleteUserHandler(userService *application.UserService) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 	}
 }
+
+// ExchangeBooksHandler handles the HTTP request for exchanging books between users.
+func ExchangeBooksHandler(exchangeService *application.ExchangeService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var exchangeRequest application.CreateExchangeRequest
+		err := json.NewDecoder(r.Body).Decode(&exchangeRequest)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		err = exchangeService.ExchangeBooks(exchangeRequest.User1ID, exchangeRequest.User2ID, exchangeRequest.Book1ID, exchangeRequest.Book2ID)
+		if err != nil {
+			// Handle specific errors as needed
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
+	}
+}
+
+// GetExchangeHandler handles the HTTP request for retrieving details of a specific exchange.
+func GetExchangeHandler(exchangeService *application.ExchangeService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		exchange, err := exchangeService.GetExchangeByID(id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		json.NewEncoder(w).Encode(exchange)
+	}
+}
