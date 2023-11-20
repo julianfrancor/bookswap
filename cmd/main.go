@@ -31,7 +31,7 @@ func main() {
 	bookService := application.NewBookService(*bookRepository)
 
 	exchangeRepository := persistence.NewExchangeRepository()
-	exchangeService := application.NewExchangeService(*exchangeRepository, *bookRepository)
+	exchangeService := application.NewExchangeService(*exchangeRepository)
 
 	// Create the router
 	router := mux.NewRouter()
@@ -50,7 +50,7 @@ func main() {
 	router.HandleFunc("/users/{id}", DeleteUserHandler(userService)).Methods("DELETE")
 
 	// Exchange handlers
-	router.HandleFunc("/exchanges", ExchangeBooksHandler(exchangeService)).Methods("POST")
+	router.HandleFunc("/exchanges", ExchangeBooksHandler(exchangeService, bookService)).Methods("POST")
 	router.HandleFunc("/exchanges/{id:[0-9]+}", GetExchangeHandler(exchangeService)).Methods("GET")
 	// Add more exchange handlers as needed
 

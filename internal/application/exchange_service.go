@@ -1,8 +1,7 @@
-// internal/application/exchange_service.go
-
 package application
 
 import (
+	"fmt"
 	"github.com/julianfrancor/bookswap/internal/infrastructure/persistence"
 	"time"
 
@@ -19,29 +18,34 @@ type CreateExchangeRequest struct {
 
 // ExchangeService provides the business logic for managing exchanges.
 type ExchangeService struct {
-	repository     persistence.ExchangeRepository
-	bookRepository persistence.BookRepository
+	repository persistence.ExchangeRepository
 }
 
 // NewExchangeService creates a new ExchangeService instance.
-func NewExchangeService(repository persistence.ExchangeRepository, bookRepository persistence.BookRepository) *ExchangeService {
+func NewExchangeService(repository persistence.ExchangeRepository) *ExchangeService {
 	return &ExchangeService{
-		repository:     repository,
-		bookRepository: bookRepository,
+		repository: repository,
 	}
 }
 
 // ExchangeBooks performs the exchange of a book from one user to another.
-func (s *ExchangeService) ExchangeBooks(user1ID, user2ID, book1ID int, book2ID int) error {
-	// Check if the book1 exists
-	book1, err := s.bookRepository.GetByID(book1ID)
+func (s *ExchangeService) ExchangeBooks(exchangeRequest CreateExchangeRequest, bookService *BookService) error {
+	user1ID := exchangeRequest.User1ID
+	user2ID := exchangeRequest.User2ID
+	book1ID := exchangeRequest.Book1ID
+	book2ID := exchangeRequest.Book2ID
+
+	// Check if the book1 existsz
+	book1, err := bookService.GetBookByID(book1ID)
 	if err != nil {
+		fmt.Println("Book1 is not in DB")
 		return err
 	}
 
 	// Check if the book1 exists
-	book2, err := s.bookRepository.GetByID(book2ID)
+	book2, err := bookService.GetBookByID(book2ID)
 	if err != nil {
+		fmt.Println("Book2 is not in DB")
 		return err
 	}
 
@@ -61,11 +65,13 @@ func (s *ExchangeService) ExchangeBooks(user1ID, user2ID, book1ID int, book2ID i
 
 	// Transfer the book1 to user2
 	book1.UserID = user2ID
-	s.bookRepository.Update(book1)
+	updateBook1Request := bookService.ConvertToUpdateBookRequest(book1)
+	bookService.UpdateBook(updateBook1Request)
 
 	// Transfer the book2 to user1
 	book2.UserID = user1ID
-	s.bookRepository.Update(book2)
+	updateBook2Request := bookService.ConvertToUpdateBookRequest(book2)
+	bookService.UpdateBook(updateBook2Request)
 
 	// Save the exchange
 	s.repository.Create(exchange)

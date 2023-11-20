@@ -102,3 +102,15 @@ func (s *BookService) GetAllBooks() []domain.Book {
 func (s *BookService) DeleteBook(id int) {
 	s.repository.Delete(id)
 }
+
+// ConvertToUpdateBookRequest converts a domain.Book to an UpdateBookRequest.
+func (s *BookService) ConvertToUpdateBookRequest(book domain.Book) UpdateBookRequest {
+	return UpdateBookRequest{
+		ID:     book.ID,
+		UserID: book.UserID,
+		Title:  book.Title,
+		Author: book.Author,
+		Genre:  book.Genre,
+		Status: book.Status,
+	}
+}
