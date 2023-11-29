@@ -30,6 +30,9 @@ func main() {
 	bookRepository := persistence.NewBookRepository()
 	bookService := application.NewBookService(*bookRepository)
 
+	exchangeRepository := persistence.NewExchangeRepository()
+	exchangeService := application.NewExchangeService(*exchangeRepository)
+
 	// Create the router
 	router := mux.NewRouter()
 
@@ -46,8 +49,11 @@ func main() {
 	router.HandleFunc("/users/{id}", UpdateUserHandler(userService)).Methods("PUT")
 	router.HandleFunc("/users/{id}", DeleteUserHandler(userService)).Methods("DELETE")
 
+	// Exchange handlers
+	router.HandleFunc("/exchanges", ExchangeBooksHandler(exchangeService, bookService, userService)).Methods("POST")
+	router.HandleFunc("/exchanges/{id:[0-9]+}", GetExchangeHandler(exchangeService)).Methods("GET")
+
 	// docs route
-	//router.PathPrefix("/documentation/").Handler(httpSwagger.WrapHandler)
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8081/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
